@@ -1,0 +1,10 @@
+---
+- hosts: web
+  gather_facts: yes
+  become: true
+
+  tasks:
+    - name: Copy web app into web virtual machine
+      synchronize:
+        src: /home/vagrant/app
+        dest: /home/vagrant

@@ -1,0 +1,123 @@
+---
+
+- hosts: web
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+
+  - name: Update server
+    command: apt-get update -y
+
+  - name: upgrade server
+    command: apt-get upgrade -y
+
+  - name: Install nodejs dependencies
+    command: apt-get install software-properties-common -y
+    ignore_errors: True
+
+  - name: Curl Node Source
+    shell: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    ignore_errors: True
+
+  - name: Install node.js
+    apt: pkg=nodejs state=present
+
+  # error runnning this command - cant work out why
+  # - name: install NPM
+  #   become: true
+  #   apt: pkg=npm state=present
+
+  - name: Install npm
+    shell: sudo npm install
+
+  - name: Install PM2
+    npm:
+      name: pm2
+      global: yes
+
+  - name: Install Nginx
+    apt: pkg=nginx state=present
+
+  - name: Remove nginx default files - sites available
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+
+  - name: touch to create a file, using symbolic link modes to set permissions
+    file:
+      path: /etc/nginx/sites-enabled/reverseproxy.conf
+      state: touch
+      mode: '666'
+
+  - name: Insert multiple lines and Backup
+    blockinfile:
+      path: /etc/nginx/sites-enabled/reverseproxy.conf
+      backup: yes
+      block: |
+        server{
+          listen 80;
+          server_name development.local;
+          location / {
+              proxy_pass http://127.0.0.1:3000;
+          }
+        }
+
+  - name: Create a symbolic link
+    file:
+      src: /etc/nginx/sites-enabled/reverseproxy.conf
+      dest: /etc/nginx/sites-available/reverseproxy.conf
+      state: link
+
+  - name: Restart nginx
+    shell: service nginx restart
+
+  - name: export db host variable for database
+    shell: echo "DB_HOST=mongodb://192.168.33.11:27017/posts" >> ~/.bashrc
+
+  - name: Stop pm2
+    shell: pm2 stop all
+    args:
+      chdir: /home/vagrant/app/
+    ignore_errors: yes
+
+  - name: NODE | Seed Posts
+    shell: node seed.js
+    args:
+      chdir: /home/vagrant/app/seeds
+
+  - name: Install npm updates
+    shell: npm install -g
+    args:
+      chdir: /home/vagrant/app
+
+  - name: Install pm2
+    npm:
+      name: pm2
+      global: yes
+
+  - name: seed database
+    command: node app/seeds/seed.js
+    # environment:
+    #   DB_HOST: mongodb://vagrant@192.168.33.11:27017/posts
+
+  - name: start app
+    command: pm2 start app/app.js
+
+  # - name: start using node
+  #   shell: sudo su | node app.js
+
+    # handlers:
+    #   - name: restart nginx
+    #     service: name=nginx state=restarted
+
+  # - name: Running App On Web Virtual Machine
+  #   shell: |
+  #     cd app
+  #     sudo npm install -g npm
+  #     npm install
+  #     node seeds/seed.js
+  #     pm2 stop all
+  #     pm2 start app.js
