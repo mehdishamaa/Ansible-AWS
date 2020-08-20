@@ -32,57 +32,22 @@ Vagrant.configure("2") do |config|
 
 
 
-# creating first VM called web
-  config.vm.define "web" do |web|
+# creating first VM called ansible
+  config.vm.define "ansible" do |ansible|
 
-    web.vm.box = "bento/ubuntu-18.04"
+    ansible.vm.box = "bento/ubuntu-18.04"
    # downloading ubuntu 18.04 image
 
 
 
-    web.vm.hostname = 'web'
+    ansible.vm.hostname = 'ansible'
     # assigning host name to the VM
 
-    web.vm.network :private_network, ip: "192.168.33.10"
+    ansible.vm.network :private_network, ip: "192.168.33.10"
     #   assigning private IP
 
-
-    # moving app directory in web virtual machine
-
-    config.hostsupdater.aliases = ["development.web"]
-    # creating a link called development.web so we can access web page with this link instread of an IP
-
-    end
-
-# creating second VM called db
-  config.vm.define "db" do |db|
-
-    db.vm.box = "bento/ubuntu-18.04"
-
-    db.vm.hostname = 'db'
-
-    db.vm.network :private_network, ip: "192.168.33.11"
-
-    config.hostsupdater.aliases = ["development.db"]
-    end
-
-
-
-# creating third VM called aws
-  config.vm.define "aws" do |aws|
-
-    aws.vm.box = "bento/ubuntu-18.04"
-
-    aws.vm.hostname = 'aws'
-
-    aws.vm.network :private_network, ip: "192.168.33.12"
-
-    aws.vm.synced_folder "app", "/home/vagrant/app"
-
-    aws.vm.synced_folder "ansible-playbooks", "/home/vagrant/ansible"
-
-    aws.vm.synced_folder "setup", "/home/vagrant/setup"
-
-    config.hostsupdater.aliases = ["development.aws"]
-   end
 end
+end
+
+
+ 
