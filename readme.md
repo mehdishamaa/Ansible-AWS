@@ -48,6 +48,9 @@ When prompted, create a password for your vault.
 (You may have to decrypt and re-encrypt the file before doing this).
 
 8. Use sudo nano playbook.yml to edit your playbook with the following code:
+
+
+
 # AWS playbook
 ---
 
@@ -123,6 +126,8 @@ When prompted, create a password for your vault.
           count: 1
           instance_tags:
             Name: Eng57.<First>.<L>.WebApp
+
+      tags: ['never', 'create_ec2']
 
       tags: ['never', 'create_ec2']
 9. Run this playbook. Your AWS instance should now be set up and running!
