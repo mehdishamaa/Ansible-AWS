@@ -1,34 +1,49 @@
-Why use Ansible to provision our EC2 instances?
+- Why use Ansible to provision our EC2 instances?
 Ansible is a powerful tool — along with Puppet and Chef it is one of the most widely-used automation engines. Ansible allows us to build our infrastructure using infrastructure as code, drastically reducing the time spent provisioning instances.
-Prerequisites
-A couple of prerequisites are needed before we start writing our Ansible files:
-An AWS account
-Ansible
-Python
-Boto
+
+
+
+# Prerequisites
+ - A couple of prerequisites are needed before we start writing our Ansible files:
+ - An AWS account
+ - Ansible
+ - Python
+ - Boto
+ 
+ 
 Firstly, open a terminal on a Linux based system. Install Ansible and its prerequisites using the following commands:
-sudo apt-get install software-properties-common
-sudo apt-add-repository ppa:Ansible/Ansible
-sudo apt-get update
-sudo apt-get install Ansible
+`sudo apt-get install software-properties-common`
+`sudo apt-add-repository ppa:Ansible/Ansible`
+`sudo apt-get update`
+`sudo apt-get install Ansible`
+
+
 2. Next install Python:
-sudo apt-get update
-sudo apt-get install python3.6
+`sudo apt-get update`
+`sudo apt-get install python3.6`
+
+
 3. Install Boto:
-sudo apt install python3-pip
-pip install Boto
+`sudo apt install python3-pip`
+`pip install Boto`
+
+
 4. Now that we have all prerequisites installed, we need to create a key to be able to SSH into our instance:
-ssh-keygen -t rsa -b 4096 -f ~/.ssh/<Your_Name>_aws
+`ssh-keygen -t rsa -b 4096 -f ~/.ssh/<Your_Name>_aws`
+
 5. Next we create our Ansible directory structure:
-mkdir -p AWS_Ansible/group_vars/all/
-cd AWS_Ansible
-touch playbook.yml
+`mkdir -p AWS_Ansible/group_vars/all/`
+`cd AWS_Ansible`
+`touch playbook.yml`
+
 6. We now need to create an Ansible vault file to store our AWS access and secret keys:
-ansible-vault create group_vars/all/pass.yml
+a`nsible-vault create group_vars/all/pass.yml`
 When prompted, create a password for your vault.
+
 7. Next, plug in your AWS access and secret keys to the pass.yml file you have just created:
-ansible-vault edit group_vars/all/pass.yml
+`ansible-vault edit group_vars/all/pass.yml`
 (You may have to decrypt and re-encrypt the file before doing this).
+
 8. Use sudo nano playbook.yml to edit your playbook with the following code:
 # AWS playbook
 ---
