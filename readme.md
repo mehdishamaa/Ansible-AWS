@@ -1,3 +1,6 @@
+https://medium.com/@mehdishamaa/how-to-provision-an-ec2-instance-using-ansible-a681f0024aad
+
+
 - Why use Ansible to provision our EC2 instances?
 Ansible is a powerful tool — along with Puppet and Chef it is one of the most widely-used automation engines. Ansible allows us to build our infrastructure using infrastructure as code, drastically reducing the time spent provisioning instances.
 
